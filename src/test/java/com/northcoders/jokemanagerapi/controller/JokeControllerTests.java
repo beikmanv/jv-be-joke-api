@@ -51,8 +51,6 @@ class JokeControllerTests {
         Instant createdAt = Instant.parse("2021-02-09T11:19:42.12Z");
         Instant modifiedAt = Instant.parse("2021-02-09T15:20:42.12Z");
 
-
-
         List<Joke> jokes = new ArrayList<Joke>();
         jokes.add( new Joke(1L, "setupLine1", "punchLine1", Joke.JokeCategories.PUN, true,  createdAt, modifiedAt));
         jokes.add( new Joke(2L, "setupLine2", "punchLine2", Joke.JokeCategories.PROGRAMMING, true,  createdAt, modifiedAt));
