@@ -75,7 +75,7 @@ class JokeControllerTests {
 
     @Test
     @DisplayName("POST /jokes using valid payload with new joke Id")
-    void testPostJoke_WithNewJokeId() throws Exception {
+    void testPostJoke_ValidPayload_WithNewJokeId() throws Exception {
         Instant createdAt = Instant.parse("2021-02-09T11:19:42.12Z");
         Instant modifiedAt = Instant.parse("2021-02-09T15:20:42.12Z");
         Joke joke = new Joke(1L, "setupLine1", "punchLine1", Joke.JokeCategories.PUN, true,  createdAt, modifiedAt));
@@ -92,11 +92,18 @@ class JokeControllerTests {
 
         // Has controller layer tried to talk to service layer to insert book once?
         verify(mockJokeServiceImpl, times(1)).addJokeItem(any(Joke.class));
-
-
-
     }
 
 
+
+    @Test
+    @DisplayName("POST /jokes using invalid payload with an existing joke id")
+    void testPostJoke_InvalidPayload_WithExistingJokeId() throws Exception {
+
+        // TODO: Still to do
+        // TODO: Implementation may need to change to detect when add did not work in db
+        // and return appropriate status code when did not get added. Then can test for this
+        // What status code?
+    }
 
 }
