@@ -1,7 +1,10 @@
 package com.northcoders.jokemanagerapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.northcoders.jokemanagerapi.model.Joke;
+import com.northcoders.jokemanagerapi.service.JokeService;
 import com.northcoders.jokemanagerapi.service.JokeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +33,7 @@ import static org.mockito.Mockito.*;
 class JokeControllerTests {
 
     @Mock
-    private JokeServiceImpl mockJokeServiceImpl;
+    private JokeService mockJokeService;
 
     @InjectMocks
     private JokeController jokeController;
@@ -44,6 +47,7 @@ class JokeControllerTests {
     public void setup() {
         mockMvcController = MockMvcBuilders.standaloneSetup(jokeController).build();
         mapper = new ObjectMapper();
+        mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
     }
 
 
@@ -59,17 +63,17 @@ class JokeControllerTests {
 
 
         // when we call mockService's method ??? we want it to return list of jokes
-        when(mockJokeServiceImpl.getAllJokes()).thenReturn(jokes);
+        when(mockJokeService.getAllJokes()).thenReturn(jokes);
 
         this.mockMvcController.perform(
                 MockMvcRequestBuilders.get("/api/v1/jokes"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].setupLine1").value("setupLine1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].punchLine1").value("punchLine1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].setupLine").value("setupLine1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].punchLine").value("punchLine1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].setupLine2").value("setupLine2"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].punchLine2").value("punchLine2"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].setupLine").value("setupLine2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].punchLine").value("punchLine2"));
                 // TODO: Add checks for remaining attributes of Joke Entity
     }
 
@@ -78,10 +82,11 @@ class JokeControllerTests {
     void testPostJoke_ValidPayload_WithNewJokeId() throws Exception {
         Instant createdAt = Instant.parse("2021-02-09T11:19:42.12Z");
         Instant modifiedAt = Instant.parse("2021-02-09T15:20:42.12Z");
-        Joke joke = new Joke(1L, "setupLine1", "punchLine1", Joke.JokeCategories.PUN, true,  createdAt, modifiedAt));
+        Joke joke = new Joke(1L, "setupLine1", "punchLine1",
+                Joke.JokeCategories.PUN, true,  createdAt, modifiedAt);
 
         // Don't care when is being passed into mocked service (addJokeItem) so long as return above joke
-        when(mockJokeServiceImpl.addJokeItem(any(Joke.class))).thenReturn(joke);
+        when(mockJokeService.addJokeItem(any(Joke.class))).thenReturn(joke);
 
         // Has client been able to get json object back, with status code created
         this.mockMvcController.perform(
@@ -91,9 +96,8 @@ class JokeControllerTests {
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
         // Has controller layer tried to talk to service layer to insert book once?
-        verify(mockJokeServiceImpl, times(1)).addJokeItem(any(Joke.class));
+        verify(mockJokeService, times(1)).addJokeItem(any(Joke.class));
     }
-
 
 
     @Test
