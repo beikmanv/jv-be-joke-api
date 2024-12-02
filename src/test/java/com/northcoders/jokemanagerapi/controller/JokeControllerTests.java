@@ -74,8 +74,8 @@ class JokeControllerTests {
     }
 
     @Test
-    @DisplayName("POST /jokes test happy path")
-    void testPostMappingAddJoke() throws Exception {
+    @DisplayName("POST /jokes using valid payload with new joke Id")
+    void testPostJoke_WithNewJokeId() throws Exception {
         Instant createdAt = Instant.parse("2021-02-09T11:19:42.12Z");
         Instant modifiedAt = Instant.parse("2021-02-09T15:20:42.12Z");
         Joke joke = new Joke(1L, "setupLine1", "punchLine1", Joke.JokeCategories.PUN, true,  createdAt, modifiedAt));
