@@ -54,11 +54,9 @@ class JokeControllerTests {
 
 
         List<Joke> jokes = new ArrayList<Joke>();
-        jokes.add(
-                new Joke(1L, "setupLine1", "punchLine1", Joke.JokeCategories.PUN, true,  createdAt, modifiedAt),
-                new Joke(2L, "setupLine2", "punchLine2", Joke.JokeCategories.PROGRAMMING, true,  createdAt, modifiedAt)
+        jokes.add( new Joke(1L, "setupLine1", "punchLine1", Joke.JokeCategories.PUN, true,  createdAt, modifiedAt));
+        jokes.add( new Joke(2L, "setupLine2", "punchLine2", Joke.JokeCategories.PROGRAMMING, true,  createdAt, modifiedAt));
 
-        );
 
         // when we call mockService's method ??? we want it to return list of jokes
         when(mockJokeServiceImpl.getAllJokes()).thenReturn(jokes);
@@ -66,12 +64,14 @@ class JokeControllerTests {
         this.mockMvcController.perform(
                 MockMvcRequestBuilders.get("/api/v1/jokes"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                //.andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].setupLine1").value("setupLine1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].punchLine1").value("punchLine1"))
-                //.andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].setupLine2").value("setupLine2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].punchLine2").value("punchLine2"));
                 // TODO: Add checks for remaining attributes of Joke Entity
     }
+
+
 }
