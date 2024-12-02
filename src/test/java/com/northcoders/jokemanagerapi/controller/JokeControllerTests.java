@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import com.fasterxml.jackson.datatype.jsr310.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -45,9 +46,11 @@ class JokeControllerTests {
 
     @BeforeEach
     public void setup() {
+
         mockMvcController = MockMvcBuilders.standaloneSetup(jokeController).build();
         mapper = new ObjectMapper();
-        mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+//        mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        mapper.registerModule(new JavaTimeModule());
     }
 
 
