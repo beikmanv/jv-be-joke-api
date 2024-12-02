@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -20,7 +21,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 
 @AutoConfigureMockMvc
@@ -70,6 +72,31 @@ class JokeControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].punchLine2").value("punchLine2"));
                 // TODO: Add checks for remaining attributes of Joke Entity
     }
+
+    @Test
+    @DisplayName("POST /jokes test happy path")
+    void testPostMappingAddJoke() throws Exception {
+        Instant createdAt = Instant.parse("2021-02-09T11:19:42.12Z");
+        Instant modifiedAt = Instant.parse("2021-02-09T15:20:42.12Z");
+        Joke joke = new Joke(1L, "setupLine1", "punchLine1", Joke.JokeCategories.PUN, true,  createdAt, modifiedAt));
+
+        // Don't care when is being passed into mocked service (addJokeItem) so long as return above joke
+        when(mockJokeServiceImpl.addJokeItem(any(Joke.class))).thenReturn(joke);
+
+        // Has client been able to get json object back, with status code created
+        this.mockMvcController.perform(
+                MockMvcRequestBuilders.post("/api/vi/jokes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(joke)))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+        // Has controller layer tried to talk to service layer to insert book once?
+        verify(mockJokeServiceImpl, times(1)).addJokeItem(any(Joke.class));
+
+
+
+    }
+
 
 
 }
