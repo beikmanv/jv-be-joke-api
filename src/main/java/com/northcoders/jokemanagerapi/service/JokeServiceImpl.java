@@ -4,6 +4,7 @@ import com.northcoders.jokemanagerapi.model.Joke;
 import com.northcoders.jokemanagerapi.repository.JokeItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class JokeServiceImpl implements JokeService {
     }
 
     @Override
+    @Transactional
     public Joke addJokeItem(Joke joke) {
         Instant timestamp = Instant.now();
         joke.setCreatedAt(timestamp);
